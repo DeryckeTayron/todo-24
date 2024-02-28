@@ -1,0 +1,13 @@
+-git repo aanmaak
+-git repo clonen
+-vite project (met react & typescript) aanmaaken
+
+-node versie bijhouden
+-prettier toevoegen
+-ESLint toevoegen- en testen (npm run lint)
+-tailwind css installeren
+-project files cleanup en project structuur aanpassen
+
+-gitflow instellen
+
+-git commit en remote push
