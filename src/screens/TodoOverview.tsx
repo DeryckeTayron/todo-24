@@ -5,6 +5,11 @@ import { AppHeader } from '../components/AppHeader'
 import { AppFooter } from '../components/AppFooter'
 import { Todo } from '../models/Todo'
 
+//Todo 1: als er niets ingevuld is, mag de todo niet toegevoegd worden
+//Todo 2: een geldige todo krijgt een unieke id (met de npm uid package)
+//Todo 3: je kan ook een categorie kiezen voor je todo deze wordt ook getoond in de lijst
+//Todo 4: je kan een todo verwijderen
+
 export const TodoOverview = () => {
   const [todos, setTodos] = useState<Todo[]>([])
 
@@ -16,7 +21,7 @@ export const TodoOverview = () => {
 
   const addNewTodo = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault() //stop posting naar zelfde pagina
-    console.log(event)
+    setTodos([...todos, newTodo]) //combineer de huidige todos met de nieuwe todo
   }
 
   useEffect(() => {
