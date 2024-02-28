@@ -1,9 +1,8 @@
-function App() {
-  return (
-    <>
-      <h1>Hello buddy!</h1>
-    </>
-  )
+import { TodoOverview } from './screens/TodoOverview'
+
+
+const App = () => {
+  return <TodoOverview />
 }
 
 export default App
