@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Plus } from 'lucide-react'
 import { uid } from 'uid'
 
@@ -7,7 +7,10 @@ import { AppFooter } from '../components/AppFooter'
 import { Todo } from '../models/Todo'
 
 export const TodoOverview = () => {
-  const [todos, setTodos] = useState<Todo[]>([])
+  // Keep todos in localStorage
+  const [todos, setTodos] = useState<Todo[]>(
+    localStorage.todos ? JSON.parse(localStorage.todos) : [],
+  )
   const [checkboxClicked, setCheckboxClicked] = useState<boolean>(false)
 
   const [newTodo, setNewTodo] = useState<Todo>({
@@ -15,6 +18,10 @@ export const TodoOverview = () => {
     category: 'choose',
     isCompleted: false,
   })
+
+  useEffect(() => {
+    localStorage.todos = JSON.stringify(todos)
+  }, [todos])
 
   const addNewTodo = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
