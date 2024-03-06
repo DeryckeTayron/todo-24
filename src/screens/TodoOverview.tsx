@@ -30,7 +30,8 @@ export const TodoOverview = () => {
     })
   }
 
-  const handleCheckboxClick = (id: string) => {
+  const handleCheckboxClick = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const id = event.target.id
     const updatedTodos = todos.map(todo =>
       todo.id === id ? { ...todo, isCompleted: !todo.isCompleted } : todo,
     )
@@ -87,7 +88,7 @@ export const TodoOverview = () => {
                   type="checkbox"
                   id={todo.id}
                   checked={todo.isCompleted}
-                  onChange={() => handleCheckboxClick(todo.id)} // Pass the todo ID as checkbox ID
+                  onChange={handleCheckboxClick}
                   onMouseEnter={() => setCheckboxClicked(true)}
                   onMouseLeave={() => setCheckboxClicked(false)}
                   className={`rounded-full appearance-none border-2 w-8 h-8 ml-1 border-white cursor-pointer transition-colors duration-300 ${
