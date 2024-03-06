@@ -1,7 +1,7 @@
 // Hello, {user}!
 // There are ... todos
 
-export const AppHeader = () => {
+export const AppHeader = ({ todoCount }: { todoCount: number }) => {
   return (
     <>
       <header className="flex justify-center items-center mt-10 mb-10">
@@ -11,7 +11,7 @@ export const AppHeader = () => {
         </div>
         <div className="flex items-center justify-center w-24 h-24 bg-orange-600 rounded-full ml-4">
           <span className="text-white font-bold" style={{ fontSize: '2rem' }}>
-            6
+            {todoCount}
           </span>
         </div>
       </header>

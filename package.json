@@ -1,7 +1,7 @@
 {
   "name": "todo-24",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,6 +13,7 @@
     "lucide-react": "^0.341.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "uid": "^2.0.2",
     "vite-plugin-webfont-dl": "^3.9.1"
   },
   "devDependencies": {
