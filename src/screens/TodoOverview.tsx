@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react'
-import { Plus } from 'lucide-react'
+import React, { useEffect, useState } from 'react'
+import { Plus, Trash } from 'lucide-react' // Import Trash icon
 import { uid } from 'uid'
-
 import { AppHeader } from '../components/AppHeader'
 import { AppFooter } from '../components/AppFooter'
 import { Todo } from '../models/Todo'
@@ -11,13 +10,14 @@ export const TodoOverview = () => {
   const [todos, setTodos] = useState<Todo[]>(
     localStorage.todos ? JSON.parse(localStorage.todos) : [],
   )
-  const [checkboxClicked, setCheckboxClicked] = useState<boolean>(false)
 
   const [newTodo, setNewTodo] = useState<Todo>({
     task: '',
     category: 'choose',
     isCompleted: false,
   })
+
+  const [timeoutId, setTimeoutId] = useState<number | null>(null)
 
   useEffect(() => {
     localStorage.todos = JSON.stringify(todos)
@@ -40,9 +40,47 @@ export const TodoOverview = () => {
   const handleCheckboxClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     const id = event.target.id
     const updatedTodos = todos.map(todo =>
-      todo.id === id ? { ...todo, isCompleted: !todo.isCompleted } : todo,
+      todo.id === id
+        ? { ...todo, isCompleted: !todo.isCompleted, opacity: 0.5 }
+        : todo,
     )
+
+    // Find the todo item that was clicked
+    const clickedTodo = todos.find(todo => todo.id === id)
+    if (!clickedTodo) return
+
+    // Update the state with the modified todos
     setTodos(updatedTodos)
+
+    // Check if the completion status has changed
+    if (clickedTodo.isCompleted !== !clickedTodo.isCompleted) {
+      // Cancel previous timeout if any
+      if (timeoutId) {
+        clearTimeout(timeoutId)
+        setTimeoutId(null) // Reset timeoutId state
+      }
+
+      // Start timer if isCompleted is true
+      if (!clickedTodo.isCompleted) {
+        const newTimeoutId = setTimeout(() => {
+          setTodos(prevTodos => {
+            const updatedTodosFiltered = prevTodos.filter(
+              todo => todo.id !== id,
+            )
+            localStorage.todos = JSON.stringify(updatedTodosFiltered)
+            return updatedTodosFiltered
+          })
+        }, 2000)
+        setTimeoutId(newTimeoutId)
+      }
+    }
+  }
+
+  const handleTrashClick = (id: string | undefined) => {
+    if (!id) return // Check if id is undefined
+    const updatedTodos = todos.filter(todo => todo.id !== id)
+    setTodos(updatedTodos)
+    localStorage.todos = JSON.stringify(updatedTodos) // Update localStorage
   }
 
   return (
@@ -90,26 +128,35 @@ export const TodoOverview = () => {
             className="flex w-full justify-center items-center"
           >
             <ul className="w-full">
-              <li className="flex justify-between mt-10">
+              <li
+                className={`flex justify-between mt-10 ${
+                  todo.isCompleted ? 'opacity-50' : ''
+                }`}
+              >
                 <input
                   type="checkbox"
                   id={todo.id}
                   checked={todo.isCompleted}
                   onChange={handleCheckboxClick}
-                  onMouseEnter={() => setCheckboxClicked(true)}
-                  onMouseLeave={() => setCheckboxClicked(false)}
-                  className={`rounded-full appearance-none border-2 w-8 h-8 ml-1 border-white cursor-pointer transition-colors duration-300 ${
-                    checkboxClicked
-                      ? 'hover:bg-orange-600 hover:border-orange-600'
-                      : ''
+                  className={`rounded-full appearance-none border-2 w-8 h-8 ml-1 border-white cursor-pointer transition-colors duration-300 hover:bg-orange-600 hover:border-orange-600 ${
+                    todo.isCompleted ? 'bg-orange-600 border-orange-600' : ''
                   }`}
                 />
-                <label className="text-right" htmlFor={todo.id}>
-                  <div>
-                    {todo.task}
-                    <p>{todo.category}</p>
-                  </div>
-                </label>
+
+                <div className="flex row">
+                  <label className="text-right" htmlFor={todo.id}>
+                    <div>
+                      {todo.task}
+                      <p>{todo.category}</p>
+                    </div>
+                  </label>
+                  <button
+                    className="ml-10"
+                    onClick={() => handleTrashClick(todo.id)}
+                  >
+                    <Trash />
+                  </button>
+                </div>
               </li>
             </ul>
           </div>
